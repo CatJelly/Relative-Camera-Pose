@@ -1,0 +1,28 @@
+pipeline: Relative Camera Pose Estimation pipeline
+data_params:
+  work_dir: /data/projects/RelPoseNet
+  img_dir: /ssd/data/7scenes-light
+  train_pairs_fname: ${data_params.work_dir}/assets/data/db_all_med_hard_train.txt
+  val_pairs_fname: ${data_params.work_dir}/assets/data/db_all_med_hard_valid.txt
+model_params:
+  backbone_net: resnet34
+  resume_snapshot: null
+train_params:
+  bs: 32
+  lr: 1e-3
+  alpha: 1
+  n_workers: 8
+  n_train_iters: 125000 # 42k is the size of our training dataset 'db_all_med_hard_train.txt'
+  scheduler:
+    lrate_decay_steps: 15000
+    lrate_decay_factor: 0.5
+output_params:
+  out_dir: /data/output/relposenet
+  logger_dir: ${output_params.out_dir}/tboard/${model_params.backbone_net}
+  snapshot_dir: ${output_params.out_dir}/snapshots/${model_params.backbone_net}
+  validate_interval: 1300
+  log_scalar_interval: 200
+seed: 1984
+hydra:
+  run:
+    dir: ${output_params.out_dir}
